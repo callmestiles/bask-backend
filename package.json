@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/callmestiles/bask-backend#readme",
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
     "@types/node": "^24.9.2",
