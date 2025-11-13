@@ -66,10 +66,13 @@ export const googleAuthCallback = (req: Request, res: Response) => {
     const user = req.user as User;
     const token = generateToken(user.id);
 
-    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${token}`);
+    const frontendUrl = req.headers.origin || process.env.FRONTEND_URL_LOCAL;
+
+    res.redirect(`${frontendUrl}/auth/callback?token=${token}`);
   } catch (error) {
     console.error("Google auth callback error:", error);
-    res.redirect(`${process.env.FRONTEND_URL}/login?error=auth_failed`);
+    const frontendUrl = req.headers.origin || process.env.FRONTEND_URL_LOCAL;
+    res.redirect(`${frontendUrl}/login?error=auth_failed`);
   }
 };
 
