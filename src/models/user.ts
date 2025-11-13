@@ -6,12 +6,12 @@ import {
   CreationOptional,
 } from "sequelize";
 import sequelize from "../config/database";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
-export type AccountType = "PLayer" | "Fan" | "Team" | "Scout";
+export type AccountType = "Player" | "Fan" | "Team" | "Scout";
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
-  declare id: CreationOptional<number>;
+  declare id: CreationOptional<string>;
   declare email: string;
   declare password: CreationOptional<string | null>;
   declare accountType: AccountType;

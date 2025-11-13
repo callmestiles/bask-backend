@@ -37,8 +37,7 @@ export const initDatabase = async () => {
   try {
     await sequelize.authenticate();
     console.log("🚀Database has been connected");
-
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV !== "production") {
       await sequelize.sync({ alter: true });
       console.log("✅ Database models synchronized.");
     }

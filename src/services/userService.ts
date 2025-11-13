@@ -15,6 +15,22 @@ export const createUser = async (userData: CreateUserDTO): Promise<User> => {
   return await User.create(userData);
 };
 
+export const findUserByEmail = async (email: string): Promise<User | null> => {
+  return await User.findOne({ where: { email } });
+};
+
+export const findUserById = async (id: string): Promise<User | null> => {
+  return await User.findByPk(id, {
+    attributes: { exclude: ["password"] },
+  });
+};
+
+export const findUserByGoogleId = async (
+  googleId: string
+): Promise<User | null> => {
+  return await User.findOne({ where: { googleId } });
+};
+
 export const getUserByEmail = async (email: string): Promise<User | null> => {
   return await User.findOne({ where: { email } });
 };
