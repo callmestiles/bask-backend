@@ -66,12 +66,43 @@ export const googleAuthCallback = (req: Request, res: Response) => {
     const user = req.user as User;
     const token = generateToken(user.id);
 
-    const frontendUrl = req.headers.origin || process.env.FRONTEND_URL_LOCAL;
+    const frontendUrls = process.env.FRONTEND_URLS
+      ? process.env.FRONTEND_URLS.split(",")
+      : ["http://localhost:4200"]; //remember to change this to the actual local url
+
+    const requestOrigin = req.headers.origin || req.headers.referer;
+    let frontendUrl = frontendUrls[0]; // Default to first URL (local)
+
+    if (requestOrigin) {
+      const matchedUrl = frontendUrls.find((url) =>
+        requestOrigin.startsWith(url)
+      );
+      if (matchedUrl) {
+        frontendUrl = matchedUrl;
+      }
+    }
 
     res.redirect(`${frontendUrl}/auth/callback?token=${token}`);
   } catch (error) {
     console.error("Google auth callback error:", error);
-    const frontendUrl = req.headers.origin || process.env.FRONTEND_URL_LOCAL;
+
+    // Same logic for error redirect
+    const frontendUrls = process.env.FRONTEND_URLS
+      ? process.env.FRONTEND_URLS.split(",")
+      : ["http://localhost:4200"]; //reember to change this to the actual local url
+
+    const requestOrigin = req.headers.origin || req.headers.referer;
+    let frontendUrl = frontendUrls[0];
+
+    if (requestOrigin) {
+      const matchedUrl = frontendUrls.find((url) =>
+        requestOrigin.startsWith(url)
+      );
+      if (matchedUrl) {
+        frontendUrl = matchedUrl;
+      }
+    }
+
     res.redirect(`${frontendUrl}/login?error=auth_failed`);
   }
 };

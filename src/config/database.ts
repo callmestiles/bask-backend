@@ -14,7 +14,7 @@ if (
 }
 
 const sequelize = new Sequelize({
-  dialect: "mysql",
+  dialect: "postgres",
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
   username: process.env.DB_USER,
@@ -28,8 +28,8 @@ const sequelize = new Sequelize({
     idle: 10000,
   },
   define: {
-    charset: "utf8mb4",
-    collate: "utf8mb4_general_ci",
+    charset: "UTF8",
+    collate: "en_US.UTF-8",
   },
 });
 
@@ -37,9 +37,13 @@ export const initDatabase = async () => {
   try {
     await sequelize.authenticate();
     console.log("🚀Database has been connected");
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.DB_SYNC === "true") {
       await sequelize.sync({ alter: true });
       console.log("✅ Database models synchronized.");
+    } else {
+      console.log(
+        "⚠️ Skipping automatic DB sync (DB_SYNC not set). If you need tables created, set DB_SYNC=true"
+      );
     }
   } catch (error) {
     console.error("Unable to connect to the database:", error);
