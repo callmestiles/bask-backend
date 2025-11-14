@@ -68,7 +68,7 @@ export const googleAuthCallback = (req: Request, res: Response) => {
 
     const frontendUrls = process.env.FRONTEND_URLS
       ? process.env.FRONTEND_URLS.split(",")
-      : ["http://localhost:4200"]; //remember to change this to the actual local url
+      : ["http://localhost:9002"];
 
     const requestOrigin = req.headers.origin || req.headers.referer;
     let frontendUrl = frontendUrls[0]; // Default to first URL (local)
@@ -89,7 +89,7 @@ export const googleAuthCallback = (req: Request, res: Response) => {
     // Same logic for error redirect
     const frontendUrls = process.env.FRONTEND_URLS
       ? process.env.FRONTEND_URLS.split(",")
-      : ["http://localhost:4200"]; //reember to change this to the actual local url
+      : ["http://localhost:9002"];
 
     const requestOrigin = req.headers.origin || req.headers.referer;
     let frontendUrl = frontendUrls[0];

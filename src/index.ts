@@ -5,9 +5,10 @@ dotenv.config();
 
 import cors from "cors";
 import { initDatabase } from "./config/database";
+
 import passport from "passport";
-// register passport strategies (side-effect import) - must run after dotenv.config()
 import "./config/passport";
+
 import authRoutes from "./routes/auth.routes";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger";
@@ -17,7 +18,7 @@ const app: Express = express();
 
 const allowedOrigins = process.env.FRONTEND_URLS
   ? process.env.FRONTEND_URLS.split(",")
-  : ["http://localhost:5172"]; //change the default to frontend dev URL
+  : ["http://localhost:9002"];
 
 app.use(
   cors({

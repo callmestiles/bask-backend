@@ -10,6 +10,11 @@ const swaggerSpec: OpenAPIV3.Document = {
   servers: [
     {
       url: `http://localhost:${process.env.PORT || 3000}`,
+      description: "Local development",
+    },
+    {
+      url: "https://bask-backend.onrender.com",
+      description: "Production (Render)",
     },
   ],
   components: {
