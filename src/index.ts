@@ -9,13 +9,15 @@ import passport from "passport";
 // register passport strategies (side-effect import) - must run after dotenv.config()
 import "./config/passport";
 import authRoutes from "./routes/auth.routes";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./config/swagger";
 
 const PORT: number = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 const app: Express = express();
 
 const allowedOrigins = process.env.FRONTEND_URLS
   ? process.env.FRONTEND_URLS.split(",")
-  : ["http://localhost:4200"];
+  : ["http://localhost:5172"]; //change the default to frontend dev URL
 
 app.use(
   cors({
@@ -38,6 +40,9 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
+
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get("/api/docs/json", (_req, res) => res.json(swaggerSpec));
 
 app.get("/", (req, res) => {
   res.send("Hello, Bask Backend!");
