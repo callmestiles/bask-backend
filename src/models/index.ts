@@ -1,9 +1,17 @@
-import sequelize from "../config/database";
 import User from "./user";
+import Post from "./post";
 
-const models = {
-  User,
-};
+// Define associations here
+Post.belongsTo(User, {
+  foreignKey: "userId",
+  as: "author",
+});
 
-export { sequelize, User };
-export default models;
+User.hasMany(Post, {
+  foreignKey: "userId",
+  as: "posts",
+});
+
+export { User, Post };
+
+export default { User, Post };

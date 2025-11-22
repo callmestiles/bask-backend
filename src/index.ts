@@ -10,6 +10,7 @@ import passport from "passport";
 import "./config/passport";
 
 import authRoutes from "./routes/auth.routes";
+import postRoutes from "./routes/post.routes";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger";
 
@@ -50,6 +51,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/posts", postRoutes);
 
 // Global error handler
 app.use((err: any, req: any, res: any, next: any) => {

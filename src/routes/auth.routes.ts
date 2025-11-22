@@ -10,7 +10,7 @@ import {
   validateRegistration,
   validateLogin,
   handleValidationErrors,
-} from "../middleware/validation";
+} from "../middleware/authValidation";
 
 const router = Router();
 
@@ -23,11 +23,6 @@ router.post(
 
 router.post("/login", validateLogin, handleValidationErrors, login);
 
-// Start Google OAuth2 flow. We override callbackURL per-request so the same
-// code works for localhost and deployed hosts (Render). Google requires the
-// redirect URI to be registered in the Google Console — make sure both
-// http://localhost:3000/api/auth/google/callback and
-// https://bask-backend.onrender.com/api/auth/google/callback are added there.
 router.get("/google", (req, res, next) => {
   const callbackURL =
     process.env.GOOGLE_CALLBACK_URL ||
@@ -40,8 +35,6 @@ router.get("/google", (req, res, next) => {
   } as any)(req, res, next as any);
 });
 
-// Google OAuth callback. We also pass the same callbackURL override here so
-// passport verifies the returned `redirect_uri` matches what was sent.
 router.get(
   "/google/callback",
   (req, res, next) => {
