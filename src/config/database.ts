@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
+import logger from "../utils/logger";
 
 dotenv.config();
 
@@ -20,7 +21,8 @@ const sequelize = new Sequelize({
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  logging: process.env.NODE_ENV === "development" ? console.log : false,
+  logging:
+    process.env.NODE_ENV === "development" ? (msg) => logger.debug(msg) : false,
   pool: {
     max: 5,
     min: 0,
@@ -36,17 +38,17 @@ const sequelize = new Sequelize({
 export const initDatabase = async () => {
   try {
     await sequelize.authenticate();
-    console.log("🚀Database has been connected");
+    logger.info("🚀 Database has been connected");
     if (process.env.DB_SYNC === "true") {
       await sequelize.sync({ alter: true });
-      console.log("✅ Database models synchronized.");
+      logger.info("✅ Database models synchronized.");
     } else {
-      console.log(
+      logger.warn(
         "⚠️ Skipping automatic DB sync (DB_SYNC not set). If you need tables created, set DB_SYNC=true"
       );
     }
   } catch (error) {
-    console.error("Unable to connect to the database:", error);
+    logger.error("Unable to connect to the database:", error);
     process.exit(1);
   }
 };

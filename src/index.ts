@@ -5,6 +5,8 @@ dotenv.config();
 
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import morgan from "morgan";
+import logger from "./utils/logger";
 import { initDatabase } from "./config/database";
 
 import passport from "passport";
@@ -40,6 +42,24 @@ app.use(
   })
 );
 
+// Use morgan for HTTP request logging
+const morganFormat = ":method :url :status :response-time ms";
+app.use(
+  morgan(morganFormat, {
+    stream: {
+      write: (message) => {
+        const logObject = {
+          method: message.split(" ")[0],
+          url: message.split(" ")[1],
+          status: message.split(" ")[2],
+          responseTime: message.split(" ")[3],
+        };
+        logger.http(JSON.stringify(logObject));
+      },
+    },
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -57,7 +77,7 @@ app.use("/api/posts", postRoutes);
 
 // Global error handler
 app.use((err: any, req: any, res: any, next: any) => {
-  console.error(err.stack);
+  logger.error(err.stack);
   res.status(500).json({ message: "Something went wrong!" });
 });
 
@@ -65,7 +85,7 @@ const startServer = async () => {
   await initDatabase();
 
   app.listen(PORT, () => {
-    console.log(`✅Server is running on port ${PORT}`);
+    logger.info(`✅ Server is running on port ${PORT}`);
   });
 };
 
