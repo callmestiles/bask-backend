@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import { initDatabase } from "./config/database";
 
 import passport from "passport";
@@ -41,6 +42,7 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(passport.initialize());
 
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));

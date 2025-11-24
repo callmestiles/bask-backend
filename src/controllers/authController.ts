@@ -23,6 +23,13 @@ export const register = async (req: Request, res: Response) => {
 
     const token = generateToken(newUser.id);
 
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", //secure cookies in production
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // 'none' for cross-site in production
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
     res.status(201).json({
       message: "User registered successfully",
       token,
@@ -50,6 +57,13 @@ export const login = async (req: Request, res: Response) => {
 
     const token = generateToken(user.id);
 
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
     res.status(200).json({
       message: "Login successful",
       token,
@@ -65,6 +79,13 @@ export const googleAuthCallback = (req: Request, res: Response) => {
   try {
     const user = req.user as User;
     const token = generateToken(user.id);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
 
     const frontendUrls = process.env.FRONTEND_URLS
       ? process.env.FRONTEND_URLS.split(",")
