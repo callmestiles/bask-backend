@@ -29,3 +29,12 @@ export const authenticateToken = (
     }
   )(req, res, next);
 };
+
+export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
+  const user = req.user as any;
+  if (user && user.accountType === "Admin") {
+    next();
+  } else {
+    res.status(403).json({ message: "Access denied. Admin only." });
+  }
+};

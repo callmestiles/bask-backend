@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "create-admin": "ts-node scripts/createAdmin.ts"
   },
   "repository": {
     "type": "git",

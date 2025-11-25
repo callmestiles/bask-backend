@@ -8,7 +8,7 @@ import {
 import sequelize from "../config/database";
 import bcrypt from "bcryptjs";
 
-export type AccountType = "Player" | "Fan" | "Team" | "Scout";
+export type AccountType = "Player" | "Fan" | "Team" | "Scout" | "Admin";
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<string>;
@@ -55,7 +55,7 @@ User.init(
       allowNull: true,
     },
     accountType: {
-      type: DataTypes.ENUM("Player", "Fan", "Team", "Scout"),
+      type: DataTypes.ENUM("Player", "Fan", "Team", "Scout", "Admin"),
       allowNull: false,
     },
     firstName: {

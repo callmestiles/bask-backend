@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
-import { createUser, findUserByEmail } from "../services/userService";
+import {
+  createUser,
+  findUserByEmail,
+  deleteUser,
+} from "../services/userService";
 import { generateToken } from "../utils/auth";
 import { User } from "../models";
 
@@ -135,5 +139,21 @@ export const getProfile = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Get profile error:", error);
     res.status(500).json({ message: "Failed to fetch profile" });
+  }
+};
+
+export const deleteUserAccount = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const success = await deleteUser(userId);
+
+    if (!success) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error("Delete user error:", error);
+    res.status(500).json({ message: "Server error", error });
   }
 };

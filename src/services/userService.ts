@@ -67,3 +67,11 @@ export const updateUser = async (
   await user.update(updateData);
   return user;
 };
+
+export const deleteUser = async (id: string): Promise<boolean> => {
+  const user = await User.findByPk(id);
+  if (!user) return false;
+
+  await user.destroy();
+  return true;
+};

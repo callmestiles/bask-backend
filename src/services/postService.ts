@@ -103,3 +103,12 @@ export const deletePost = async (
   await post.destroy();
   return true;
 };
+
+export const deletePostAsAdmin = async (postId: string): Promise<boolean> => {
+  const post = await Post.findByPk(postId);
+
+  if (!post) return false;
+
+  await post.destroy();
+  return true;
+};

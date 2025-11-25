@@ -33,7 +33,7 @@ const swaggerSpec: OpenAPIV3.Document = {
           email: { type: "string", format: "email" },
           accountType: {
             type: "string",
-            enum: ["Player", "Fan", "Team", "Scout"],
+            enum: ["Player", "Fan", "Team", "Scout", "Admin"],
           },
           firstName: { type: "string" },
           lastName: { type: "string" },
@@ -445,6 +445,8 @@ const swaggerSpec: OpenAPIV3.Document = {
       },
       delete: {
         summary: "Delete a post",
+        description:
+          "Delete a post. Users can delete their own posts. Admins can delete any post.",
         tags: ["Posts"],
         security: [{ bearerAuth: [] }],
         parameters: [
@@ -470,7 +472,7 @@ const swaggerSpec: OpenAPIV3.Document = {
               },
             },
           },
-          "403": { description: "Forbidden (Not owner)" },
+          "403": { description: "Forbidden (Not owner or Admin)" },
           "404": { description: "Post not found" },
           "500": { description: "Server error" },
         },
@@ -511,10 +513,45 @@ const swaggerSpec: OpenAPIV3.Document = {
         },
       },
     },
+    "/api/users/{userId}": {
+      delete: {
+        summary: "Delete a user (Admin only)",
+        tags: ["Users"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            in: "path",
+            name: "userId",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+            description: "User ID",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "User deleted successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    message: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+          "403": { description: "Forbidden (Admin only)" },
+          "404": { description: "User not found" },
+          "500": { description: "Server error" },
+        },
+      },
+    },
   },
   tags: [
     { name: "Auth", description: "Authentication and user routes" },
     { name: "Posts", description: "Post management routes" },
+    { name: "Users", description: "User management routes" },
   ],
 };
 

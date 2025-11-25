@@ -6,6 +6,7 @@ import {
   getAllPosts,
   updatePost,
   deletePost,
+  deletePostAsAdmin,
 } from "../services/postService";
 import {
   uploadToCloudinary,
@@ -250,6 +251,26 @@ export const deleteUserPost = async (req: Request, res: Response) => {
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Allow Admin to delete any post
+    if (user.accountType === "Admin") {
+      if (post.media && post.media.length > 0) {
+        const deletePromises = post.media.map((item) =>
+          deleteFromCloudinary(item.publicId)
+        );
+        await Promise.all(deletePromises);
+      }
+
+      const success = await deletePostAsAdmin(postId);
+      if (!success) {
+        return res.status(500).json({
+          message: "Failed to delete post",
+        });
+      }
+      return res.status(200).json({
+        message: "Post deleted successfully by Admin",
+      });
     }
 
     if (post.userId !== user.id) {
