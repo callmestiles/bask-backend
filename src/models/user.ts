@@ -4,6 +4,10 @@ import {
   InferAttributes,
   InferCreationAttributes,
   CreationOptional,
+  HasManyGetAssociationsMixin,
+  HasManyCountAssociationsMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyCountAssociationsMixin,
 } from "sequelize";
 import sequelize from "../config/database";
 import bcrypt from "bcryptjs";
@@ -23,6 +27,12 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare isEmailVerified: CreationOptional<boolean>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
+
+  // Association Mixins
+  declare getFollowers: BelongsToManyGetAssociationsMixin<User>;
+  declare countFollowers: BelongsToManyCountAssociationsMixin;
+  declare getFollowing: BelongsToManyGetAssociationsMixin<User>;
+  declare countFollowing: BelongsToManyCountAssociationsMixin;
 
   async comparePassword(password: string): Promise<boolean> {
     if (!this.password) return false;

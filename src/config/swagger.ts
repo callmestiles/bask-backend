@@ -84,6 +84,18 @@ const swaggerSpec: OpenAPIV3.Document = {
           author: { $ref: "#/components/schemas/User" },
         },
       },
+      Comment: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid" },
+          userId: { type: "string", format: "uuid" },
+          postId: { type: "string", format: "uuid" },
+          content: { type: "string" },
+          createdAt: { type: "string", format: "date-time" },
+          updatedAt: { type: "string", format: "date-time" },
+          author: { $ref: "#/components/schemas/User" },
+        },
+      },
     },
   },
   paths: {
@@ -513,6 +525,205 @@ const swaggerSpec: OpenAPIV3.Document = {
         },
       },
     },
+    "/api/posts/{postId}/comments": {
+      post: {
+        summary: "Add a comment to a post",
+        tags: ["Comments"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            in: "path",
+            name: "postId",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+            description: "Post ID",
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["content"],
+                properties: {
+                  content: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          "201": {
+            description: "Comment added successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    message: { type: "string" },
+                    comment: { $ref: "#/components/schemas/Comment" },
+                  },
+                },
+              },
+            },
+          },
+          "400": { description: "Validation error" },
+          "500": { description: "Server error" },
+        },
+      },
+      get: {
+        summary: "Get comments for a post",
+        tags: ["Comments"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            in: "path",
+            name: "postId",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+            description: "Post ID",
+          },
+          {
+            in: "query",
+            name: "page",
+            schema: { type: "integer", default: 1 },
+            description: "Page number",
+          },
+          {
+            in: "query",
+            name: "limit",
+            schema: { type: "integer", default: 20 },
+            description: "Items per page",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "List of comments",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    comments: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/Comment" },
+                    },
+                    pagination: {
+                      type: "object",
+                      properties: {
+                        page: { type: "integer" },
+                        limit: { type: "integer" },
+                        total: { type: "integer" },
+                        totalPages: { type: "integer" },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "500": { description: "Server error" },
+        },
+      },
+    },
+    "/api/posts/{postId}/like": {
+      post: {
+        summary: "Toggle like on a post",
+        tags: ["Likes"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            in: "path",
+            name: "postId",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+            description: "Post ID",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Like toggled successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    message: { type: "string" },
+                    liked: { type: "boolean" },
+                  },
+                },
+              },
+            },
+          },
+          "404": { description: "Post not found" },
+          "500": { description: "Server error" },
+        },
+      },
+      get: {
+        summary: "Check if user liked a post",
+        tags: ["Likes"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            in: "path",
+            name: "postId",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+            description: "Post ID",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Like status",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    liked: { type: "boolean" },
+                  },
+                },
+              },
+            },
+          },
+          "500": { description: "Server error" },
+        },
+      },
+    },
+    "/api/comments/{commentId}": {
+      delete: {
+        summary: "Delete a comment",
+        tags: ["Comments"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            in: "path",
+            name: "commentId",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+            description: "Comment ID",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Comment deleted successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    message: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+          "403": { description: "Forbidden (Not owner or Admin)" },
+          "500": { description: "Server error" },
+        },
+      },
+    },
     "/api/users/{userId}": {
       delete: {
         summary: "Delete a user (Admin only)",
@@ -547,11 +758,190 @@ const swaggerSpec: OpenAPIV3.Document = {
         },
       },
     },
+    "/api/users/{userId}/follow": {
+      post: {
+        summary: "Follow a user",
+        tags: ["Follows"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            in: "path",
+            name: "userId",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+            description: "User ID to follow",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Followed successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    message: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+          "400": { description: "Already following or invalid user type" },
+          "500": { description: "Server error" },
+        },
+      },
+      delete: {
+        summary: "Unfollow a user",
+        tags: ["Follows"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            in: "path",
+            name: "userId",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+            description: "User ID to unfollow",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Unfollowed successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    message: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+          "400": { description: "Not following" },
+          "500": { description: "Server error" },
+        },
+      },
+    },
+    "/api/users/{userId}/followers": {
+      get: {
+        summary: "Get user's followers",
+        tags: ["Follows"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            in: "path",
+            name: "userId",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+            description: "User ID",
+          },
+          {
+            in: "query",
+            name: "page",
+            schema: { type: "integer", default: 1 },
+            description: "Page number",
+          },
+          {
+            in: "query",
+            name: "limit",
+            schema: { type: "integer", default: 20 },
+            description: "Items per page",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "List of followers",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    followers: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/User" },
+                    },
+                    pagination: {
+                      type: "object",
+                      properties: {
+                        page: { type: "integer" },
+                        limit: { type: "integer" },
+                        total: { type: "integer" },
+                        totalPages: { type: "integer" },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "500": { description: "Server error" },
+        },
+      },
+    },
+    "/api/users/{userId}/following": {
+      get: {
+        summary: "Get users followed by user",
+        tags: ["Follows"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            in: "path",
+            name: "userId",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+            description: "User ID",
+          },
+          {
+            in: "query",
+            name: "page",
+            schema: { type: "integer", default: 1 },
+            description: "Page number",
+          },
+          {
+            in: "query",
+            name: "limit",
+            schema: { type: "integer", default: 20 },
+            description: "Items per page",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "List of following",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    following: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/User" },
+                    },
+                    pagination: {
+                      type: "object",
+                      properties: {
+                        page: { type: "integer" },
+                        limit: { type: "integer" },
+                        total: { type: "integer" },
+                        totalPages: { type: "integer" },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "500": { description: "Server error" },
+        },
+      },
+    },
   },
   tags: [
     { name: "Auth", description: "Authentication and user routes" },
     { name: "Posts", description: "Post management routes" },
     { name: "Users", description: "User management routes" },
+    { name: "Comments", description: "Comment management routes" },
+    { name: "Likes", description: "Like management routes" },
+    { name: "Follows", description: "Follow management routes" },
   ],
 };
 

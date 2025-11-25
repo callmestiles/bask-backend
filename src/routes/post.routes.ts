@@ -7,6 +7,8 @@ import {
   updateUserPost,
   deleteUserPost,
 } from "../controllers/postController";
+import { addComment, getPostComments } from "../controllers/commentController";
+import { likePost, checkLikeStatus } from "../controllers/likeController";
 import { authenticateToken } from "../middleware/auth";
 import { upload } from "../middleware/upload";
 import {
@@ -63,6 +65,40 @@ router.delete(
   validatePostId,
   handleValidationErrors,
   deleteUserPost
+);
+
+// Comments
+router.post(
+  "/:postId/comments",
+  authenticateToken,
+  validatePostId,
+  handleValidationErrors,
+  addComment
+);
+
+router.get(
+  "/:postId/comments",
+  authenticateToken,
+  validatePostId,
+  handleValidationErrors,
+  getPostComments
+);
+
+// Likes
+router.post(
+  "/:postId/like",
+  authenticateToken,
+  validatePostId,
+  handleValidationErrors,
+  likePost
+);
+
+router.get(
+  "/:postId/like",
+  authenticateToken,
+  validatePostId,
+  handleValidationErrors,
+  checkLikeStatus
 );
 
 export default router;
