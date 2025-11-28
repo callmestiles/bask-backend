@@ -5,13 +5,14 @@ import { postPaths } from "./paths/post";
 import { userPaths } from "./paths/user";
 import { commentPaths } from "./paths/comment";
 import { messagePaths } from "./paths/message";
+import { socketDocumentation } from "./socketDocumentation";
 
 const swaggerSpec: OpenAPIV3.Document = {
   openapi: "3.0.0",
   info: {
     title: "Bask Backend API",
     version: "1.0.0",
-    description: "API docs for Bask Backend",
+    description: "API docs for Bask Backend\n\n" + socketDocumentation,
   },
   servers: [
     {
