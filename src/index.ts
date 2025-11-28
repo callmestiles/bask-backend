@@ -1,5 +1,7 @@
 import express, { Express } from "express";
 import dotenv from "dotenv";
+import { createServer } from "http";
+import { initSocket } from "./sockets";
 
 dotenv.config();
 
@@ -16,11 +18,14 @@ import authRoutes from "./routes/auth.routes";
 import postRoutes from "./routes/post.routes";
 import userRoutes from "./routes/user.routes";
 import commentRoutes from "./routes/comment.routes";
+import messageRoutes from "./routes/message.routes";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger";
 
 const PORT: number = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 const app: Express = express();
+const httpServer = createServer(app);
+initSocket(httpServer);
 
 const allowedOrigins = process.env.FRONTEND_URLS
   ? process.env.FRONTEND_URLS.split(",")
@@ -78,6 +83,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/comments", commentRoutes);
+app.use("/api/messages", messageRoutes);
 
 // Global error handler
 app.use((err: any, req: any, res: any, next: any) => {
@@ -88,7 +94,7 @@ app.use((err: any, req: any, res: any, next: any) => {
 const startServer = async () => {
   await initDatabase();
 
-  app.listen(PORT, () => {
+  httpServer.listen(PORT, () => {
     logger.info(`✅ Server is running on port ${PORT}`);
   });
 };

@@ -3,6 +3,8 @@ import Post from "./post";
 import Comment from "./comment";
 import Like from "./like";
 import Follow from "./follow";
+import Conversation from "./conversation";
+import Message from "./message";
 
 // Define associations here
 Post.belongsTo(User, {
@@ -72,6 +74,36 @@ User.belongsToMany(User, {
   otherKey: "followingId",
 });
 
-export { User, Post, Comment, Like, Follow };
+// Conversation Associations
+Conversation.hasMany(Message, {
+  foreignKey: "conversationId",
+  as: "messages",
+});
 
-export default { User, Post, Comment, Like, Follow };
+Message.belongsTo(Conversation, {
+  foreignKey: "conversationId",
+  as: "conversation",
+});
+
+Message.belongsTo(User, {
+  foreignKey: "senderId",
+  as: "sender",
+});
+
+User.belongsToMany(Conversation, {
+  through: "ConversationParticipants",
+  as: "conversations",
+  foreignKey: "userId",
+  otherKey: "conversationId",
+});
+
+Conversation.belongsToMany(User, {
+  through: "ConversationParticipants",
+  as: "participants",
+  foreignKey: "conversationId",
+  otherKey: "userId",
+});
+
+export { User, Post, Comment, Like, Follow, Conversation, Message };
+
+export default { User, Post, Comment, Like, Follow, Conversation, Message };

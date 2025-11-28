@@ -33,6 +33,15 @@ const sequelize = new Sequelize({
     charset: "UTF8",
     collate: "en_US.UTF-8",
   },
+  dialectOptions:
+    process.env.DB_SSL === "true"
+      ? {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        }
+      : {},
 });
 
 export const initDatabase = async () => {
