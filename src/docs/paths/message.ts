@@ -1,7 +1,7 @@
 import { OpenAPIV3 } from "openapi-types";
 
 export const messagePaths: OpenAPIV3.PathsObject = {
-  "/api/messages/conversations": {
+  "/api/conversations": {
     get: {
       summary: "Get user's conversations",
       tags: ["Messages"],
@@ -22,7 +22,7 @@ export const messagePaths: OpenAPIV3.PathsObject = {
       },
     },
   },
-  "/api/messages/conversations/{conversationId}/messages": {
+  "/api/conversations/{conversationId}/messages": {
     get: {
       summary: "Get messages in a conversation",
       tags: ["Messages"],

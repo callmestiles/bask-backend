@@ -4,14 +4,10 @@ import { authenticateToken } from "../middleware/auth";
 
 const router = Router();
 
-router.get(
-  "/conversations",
-  authenticateToken,
-  messageController.getConversations
-);
+router.get("/", authenticateToken, messageController.getConversations);
 
 router.get(
-  "/conversations/:conversationId/messages",
+  "/:conversationId/messages",
   authenticateToken,
   messageController.getMessages
 );

@@ -83,7 +83,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/comments", commentRoutes);
-app.use("/api/messages", messageRoutes);
+app.use("/api/conversations", messageRoutes);
 
 // Global error handler
 app.use((err: any, req: any, res: any, next: any) => {
