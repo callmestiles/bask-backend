@@ -19,6 +19,7 @@ import postRoutes from "./routes/post.routes";
 import userRoutes from "./routes/user.routes";
 import commentRoutes from "./routes/comment.routes";
 import messageRoutes from "./routes/message.routes";
+import eventRoutes from "./routes/event.routes";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger";
 
@@ -84,6 +85,7 @@ app.use("/api/posts", postRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/conversations", messageRoutes);
+app.use("/api/events", eventRoutes);
 
 // Global error handler
 app.use((err: any, req: any, res: any, next: any) => {
