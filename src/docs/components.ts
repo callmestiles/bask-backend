@@ -110,5 +110,29 @@ export const components: OpenAPIV3.ComponentsObject = {
         sender: { $ref: "#/components/schemas/User" },
       },
     },
+    Event: {
+      type: "object",
+      properties: {
+        id: { type: "string", format: "uuid" },
+        title: { type: "string" },
+        description: { type: "string" },
+        date: { type: "string", format: "date-time" },
+        location: { type: "string" },
+        media: {
+          type: "array",
+          items: { $ref: "#/components/schemas/MediaItem" },
+          nullable: true,
+        },
+        organizerId: { type: "string", format: "uuid" },
+        createdAt: { type: "string", format: "date-time" },
+        updatedAt: { type: "string", format: "date-time" },
+        organizer: { $ref: "#/components/schemas/User" },
+        attendees: {
+          type: "array",
+          items: { $ref: "#/components/schemas/User" },
+        },
+        attendeesCount: { type: "integer" },
+      },
+    },
   },
 };

@@ -5,6 +5,7 @@ import { postPaths } from "./paths/post";
 import { userPaths } from "./paths/user";
 import { commentPaths } from "./paths/comment";
 import { messagePaths } from "./paths/message";
+import { eventPaths } from "./paths/event";
 import { socketDocumentation } from "./socketDocumentation";
 
 const swaggerSpec: OpenAPIV3.Document = {
@@ -31,6 +32,7 @@ const swaggerSpec: OpenAPIV3.Document = {
     ...userPaths,
     ...commentPaths,
     ...messagePaths,
+    ...eventPaths,
   },
   tags: [
     { name: "Auth", description: "Authentication and user routes" },
@@ -40,6 +42,7 @@ const swaggerSpec: OpenAPIV3.Document = {
     { name: "Likes", description: "Like management routes" },
     { name: "Follows", description: "Follow management routes" },
     { name: "Messages", description: "Messaging routes" },
+    { name: "Events", description: "Event management routes" },
   ],
 };
 
