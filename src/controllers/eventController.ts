@@ -98,27 +98,6 @@ export const getEvents = async (req: Request, res: Response) => {
   }
 };
 
-export const getAdminEvents = async (req: Request, res: Response) => {
-  try {
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 20;
-    const offset = (page - 1) * limit;
-
-    const { events, total } = await eventService.getAdminEvents(limit, offset);
-    res.status(200).json({
-      events,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
-    });
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 export const getEventById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

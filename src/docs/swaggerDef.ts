@@ -6,6 +6,7 @@ import { userPaths } from "./paths/user";
 import { commentPaths } from "./paths/comment";
 import { messagePaths } from "./paths/message";
 import { eventPaths } from "./paths/event";
+import { adminPaths } from "./paths/admin";
 import { socketDocumentation } from "./socketDocumentation";
 
 const swaggerSpec: OpenAPIV3.Document = {
@@ -33,6 +34,7 @@ const swaggerSpec: OpenAPIV3.Document = {
     ...commentPaths,
     ...messagePaths,
     ...eventPaths,
+    ...adminPaths,
   },
   tags: [
     { name: "Auth", description: "Authentication and user routes" },
@@ -43,6 +45,7 @@ const swaggerSpec: OpenAPIV3.Document = {
     { name: "Follows", description: "Follow management routes" },
     { name: "Messages", description: "Messaging routes" },
     { name: "Events", description: "Event management routes" },
+    { name: "Admin", description: "Admin dashboard routes" },
   ],
 };
 

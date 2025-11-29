@@ -75,3 +75,17 @@ export const deleteUser = async (id: string): Promise<boolean> => {
   await user.destroy();
   return true;
 };
+
+export const getAllUsers = async (
+  limit: number = 20,
+  offset: number = 0
+): Promise<{ users: User[]; total: number }> => {
+  const { count, rows } = await User.findAndCountAll({
+    attributes: { exclude: ["password"] },
+    order: [["createdAt", "DESC"]],
+    limit,
+    offset,
+  });
+
+  return { users: rows, total: count };
+};

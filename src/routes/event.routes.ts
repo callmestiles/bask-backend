@@ -27,11 +27,5 @@ router.delete(
   authenticateToken,
   eventController.unregisterFromEvent
 );
-router.get(
-  "/admin/dashboard",
-  authenticateToken,
-  isAdmin,
-  eventController.getAdminEvents
-);
 
 export default router;
