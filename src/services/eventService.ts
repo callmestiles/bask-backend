@@ -1,7 +1,16 @@
-import { Event, User } from "../models";
+import { Event, User, EventAttendee } from "../models";
 import { MediaItem } from "../models/event";
 import { Op } from "sequelize";
 import sequelize from "../config/database";
+
+function generateTicketId(): string {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+  for (let i = 0; i < 8; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
 
 interface CreateEventData {
   title: string;
@@ -55,11 +64,56 @@ export const registerUserToEvent = async (
     throw new Error("User already registered for this event");
   }
 
-  await event.addAttendee(user);
-  return { message: "Successfully registered for the event", event, user };
+  let ticketId = generateTicketId();
+  // Ensure uniqueness of ticketId for this event (optional but good practice)
+  let existingTicket = await EventAttendee.findOne({ where: { ticketId } });
+  while (existingTicket) {
+    ticketId = generateTicketId();
+    existingTicket = await EventAttendee.findOne({ where: { ticketId } });
+  }
+
+  await event.addAttendee(user, { through: { ticketId } });
+  return {
+    message: "Successfully registered for the event",
+    event,
+    user,
+    ticketId,
+  };
 };
 
-export const unregisterUserFromEvent = async (eventId: string, userId: string) => {
+export const verifyTicket = async (eventId: string, ticketId: string) => {
+  const attendee = await EventAttendee.findOne({
+    where: {
+      eventId,
+      ticketId,
+    },
+  });
+
+  if (!attendee) {
+    throw new Error("Invalid ticket ID for this event");
+  }
+
+  const user = await User.findByPk(attendee.userId, {
+    attributes: ["id", "firstName", "lastName", "email", "profilePicture"],
+  });
+
+  if (!user) {
+    throw new Error("User associated with this ticket not found");
+  }
+
+  return {
+    valid: true,
+    ticketId: attendee.ticketId,
+    checkedIn: attendee.checkedIn,
+    checkedInAt: attendee.checkedInAt,
+    user,
+  };
+};
+
+export const unregisterUserFromEvent = async (
+  eventId: string,
+  userId: string
+) => {
   const event = await Event.findByPk(eventId);
   if (!event) {
     throw new Error("Event not found");
@@ -96,7 +150,10 @@ export const getAllEvents = async (limit: number = 20, offset: number = 0) => {
   return { events: rows, total: count };
 };
 
-export const getAdminEvents = async (limit: number = 20, offset: number = 0) => {
+export const getAdminEvents = async (
+  limit: number = 20,
+  offset: number = 0
+) => {
   const { count, rows } = await Event.findAndCountAll({
     attributes: {
       include: [

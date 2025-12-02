@@ -28,4 +28,11 @@ router.delete(
   eventController.unregisterFromEvent
 );
 
+router.post(
+  "/:id/verify-ticket",
+  authenticateToken,
+  isAdmin,
+  eventController.verifyEventTicket
+);
+
 export default router;

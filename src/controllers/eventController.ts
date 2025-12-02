@@ -107,3 +107,19 @@ export const getEventById = async (req: Request, res: Response) => {
     res.status(404).json({ message: error.message });
   }
 };
+
+export const verifyEventTicket = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params; // eventId
+    const { ticketId } = req.body;
+
+    if (!ticketId) {
+      return res.status(400).json({ message: "Ticket ID is required" });
+    }
+
+    const result = await eventService.verifyTicket(id, ticketId);
+    res.status(200).json(result);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+};

@@ -6,6 +6,7 @@ import Follow from "./follow";
 import Conversation from "./conversation";
 import Message from "./message";
 import Event from "./event";
+import EventAttendee from "./eventAttendee";
 
 // Define associations here
 Post.belongsTo(User, {
@@ -117,19 +118,39 @@ User.hasMany(Event, {
 });
 
 Event.belongsToMany(User, {
-  through: "EventAttendees",
+  through: EventAttendee,
   as: "attendees",
   foreignKey: "eventId",
   otherKey: "userId",
 });
 
 User.belongsToMany(Event, {
-  through: "EventAttendees",
+  through: EventAttendee,
   as: "attendingEvents",
   foreignKey: "userId",
   otherKey: "eventId",
 });
 
-export { User, Post, Comment, Like, Follow, Conversation, Message, Event };
+export {
+  User,
+  Post,
+  Comment,
+  Like,
+  Follow,
+  Conversation,
+  Message,
+  Event,
+  EventAttendee,
+};
 
-export default { User, Post, Comment, Like, Follow, Conversation, Message, Event };
+export default {
+  User,
+  Post,
+  Comment,
+  Like,
+  Follow,
+  Conversation,
+  Message,
+  Event,
+  EventAttendee,
+};

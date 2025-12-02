@@ -196,6 +196,61 @@ export const eventPaths: OpenAPIV3.PathsObject = {
       },
     },
   },
+  "/api/events/{id}/verify-ticket": {
+    post: {
+      summary: "Verify an event ticket (Admin only)",
+      tags: ["Events"],
+      security: [{ bearerAuth: [] }],
+      parameters: [
+        {
+          in: "path",
+          name: "id",
+          required: true,
+          schema: { type: "string", format: "uuid" },
+          description: "Event ID",
+        },
+      ],
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              required: ["ticketId"],
+              properties: {
+                ticketId: {
+                  type: "string",
+                  description: "The ticket ID to verify",
+                },
+              },
+            },
+          },
+        },
+      },
+      responses: {
+        "200": {
+          description: "Ticket is valid",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  valid: { type: "boolean" },
+                  ticketId: { type: "string" },
+                  checkedIn: { type: "boolean" },
+                  checkedInAt: { type: "string", format: "date-time" },
+                  user: { $ref: "#/components/schemas/User" },
+                },
+              },
+            },
+          },
+        },
+        "400": { description: "Invalid ticket or request" },
+        "403": { description: "Forbidden (Admin only)" },
+        "404": { description: "Event not found" },
+      },
+    },
+  },
   "/api/events/admin/dashboard": {
     get: {
       summary: "Get admin dashboard events (with attendee counts)",
