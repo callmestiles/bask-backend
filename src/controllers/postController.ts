@@ -19,7 +19,7 @@ import { MediaItem } from "../models/post";
 export const createNewPost = async (req: Request, res: Response) => {
   try {
     const user = req.user as User;
-    const { content } = req.body;
+    const { content, challengeId } = req.body;
     const files = req.files as Express.Multer.File[];
 
     // Only Players, Teams, and Scouts can post
@@ -65,6 +65,7 @@ export const createNewPost = async (req: Request, res: Response) => {
       userId: user.id,
       content,
       media: media.length > 0 ? media : null,
+      challengeId: challengeId || null,
     });
 
     res.status(201).json({

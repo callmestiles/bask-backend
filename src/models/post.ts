@@ -8,6 +8,7 @@ import {
 } from "sequelize";
 import sequelize from "../config/database";
 import User from "./user";
+import Challenge from "./challenge";
 
 export type MediaType = "image" | "video";
 
@@ -20,6 +21,7 @@ export interface MediaItem {
 class Post extends Model<InferAttributes<Post>, InferCreationAttributes<Post>> {
   declare id: CreationOptional<string>;
   declare userId: ForeignKey<string>;
+  declare challengeId: CreationOptional<ForeignKey<string> | null>;
   declare content: string;
   declare media: CreationOptional<MediaItem[] | null>;
   declare likesCount: CreationOptional<number>;
@@ -47,6 +49,15 @@ Post.init(
         key: "id",
       },
       onDelete: "CASCADE",
+    },
+    challengeId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: "challenges",
+        key: "id",
+      },
+      onDelete: "SET NULL",
     },
     content: {
       type: DataTypes.TEXT,

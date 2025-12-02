@@ -7,6 +7,7 @@ import Conversation from "./conversation";
 import Message from "./message";
 import Event from "./event";
 import EventAttendee from "./eventAttendee";
+import Challenge from "./challenge";
 
 // Define associations here
 Post.belongsTo(User, {
@@ -131,6 +132,27 @@ User.belongsToMany(Event, {
   otherKey: "eventId",
 });
 
+// Challenge Associations
+Challenge.belongsTo(User, {
+  foreignKey: "creatorId",
+  as: "creator",
+});
+
+User.hasMany(Challenge, {
+  foreignKey: "creatorId",
+  as: "createdChallenges",
+});
+
+Post.belongsTo(Challenge, {
+  foreignKey: "challengeId",
+  as: "challenge",
+});
+
+Challenge.hasMany(Post, {
+  foreignKey: "challengeId",
+  as: "posts",
+});
+
 export {
   User,
   Post,
@@ -141,6 +163,7 @@ export {
   Message,
   Event,
   EventAttendee,
+  Challenge,
 };
 
 export default {
@@ -153,4 +176,5 @@ export default {
   Message,
   Event,
   EventAttendee,
+  Challenge,
 };

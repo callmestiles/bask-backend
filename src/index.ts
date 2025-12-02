@@ -21,6 +21,7 @@ import adminRoutes from "./routes/admin.routes";
 import commentRoutes from "./routes/comment.routes";
 import messageRoutes from "./routes/message.routes";
 import eventRoutes from "./routes/event.routes";
+import challengeRoutes from "./routes/challenge.routes";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger";
 
@@ -88,6 +89,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/conversations", messageRoutes);
 app.use("/api/events", eventRoutes);
+app.use("/api/challenges", challengeRoutes);
 
 // Global error handler
 app.use((err: any, req: any, res: any, next: any) => {

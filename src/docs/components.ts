@@ -53,6 +53,7 @@ export const components: OpenAPIV3.ComponentsObject = {
       properties: {
         id: { type: "string", format: "uuid" },
         userId: { type: "string", format: "uuid" },
+        challengeId: { type: "string", format: "uuid", nullable: true },
         content: { type: "string" },
         media: {
           type: "array",
@@ -132,6 +133,22 @@ export const components: OpenAPIV3.ComponentsObject = {
           items: { $ref: "#/components/schemas/User" },
         },
         attendeesCount: { type: "integer" },
+      },
+    },
+    Challenge: {
+      type: "object",
+      properties: {
+        id: { type: "string", format: "uuid" },
+        title: { type: "string" },
+        description: { type: "string" },
+        hashtag: { type: "string" },
+        startDate: { type: "string", format: "date-time" },
+        endDate: { type: "string", format: "date-time" },
+        coverImage: { $ref: "#/components/schemas/MediaItem", nullable: true },
+        creatorId: { type: "string", format: "uuid" },
+        createdAt: { type: "string", format: "date-time" },
+        updatedAt: { type: "string", format: "date-time" },
+        creator: { $ref: "#/components/schemas/User" },
       },
     },
   },

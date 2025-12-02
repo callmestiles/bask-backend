@@ -5,6 +5,7 @@ interface CreatePostDTO {
   userId: string;
   content: string;
   media?: MediaItem[] | null;
+  challengeId?: string | null;
 }
 
 export const createPost = async (postData: CreatePostDTO): Promise<Post> => {
