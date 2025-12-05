@@ -7,8 +7,12 @@ import {
   getUserFollowing,
 } from "../controllers/followController";
 import { authenticateToken, isAdmin } from "../middleware/auth";
+import { getUsers } from "../controllers/userController";
 
 const router = Router();
+
+// Get all users with pagination
+router.get("/", authenticateToken, getUsers);
 
 // Admin only: Delete a user
 router.delete("/:userId", authenticateToken, isAdmin, deleteUserAccount);

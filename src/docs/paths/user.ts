@@ -1,6 +1,55 @@
 import { OpenAPIV3 } from "openapi-types";
 
 export const userPaths: OpenAPIV3.PathsObject = {
+  "/api/users": {
+    get: {
+      summary: "Get all users",
+      tags: ["Users"],
+      security: [{ bearerAuth: [] }],
+      parameters: [
+        {
+          in: "query",
+          name: "page",
+          schema: { type: "integer", default: 1 },
+          description: "Page number",
+        },
+        {
+          in: "query",
+          name: "limit",
+          schema: { type: "integer", default: 20 },
+          description: "Items per page",
+        },
+      ],
+      responses: {
+        "200": {
+          description: "List of users",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  users: {
+                    type: "array",
+                    items: { $ref: "#/components/schemas/User" },
+                  },
+                  pagination: {
+                    type: "object",
+                    properties: {
+                      page: { type: "integer" },
+                      limit: { type: "integer" },
+                      total: { type: "integer" },
+                      totalPages: { type: "integer" },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        "500": { description: "Server error" },
+      },
+    },
+  },
   "/api/users/{userId}": {
     delete: {
       summary: "Delete a user (Admin only)",
