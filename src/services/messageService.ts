@@ -158,22 +158,8 @@ export const getConversations = async (userId: string) => {
             attributes: ["id", "firstName", "lastName", "profilePicture"],
             through: { attributes: [] },
           },
-          {
-            model: Message,
-            as: "messages",
-            limit: 1,
-            order: [["createdAt", "DESC"]],
-          },
         ],
       },
-    ],
-    order: [
-      [
-        { model: Conversation, as: "conversations" },
-        { model: Message, as: "messages" },
-        "createdAt",
-        "DESC",
-      ],
     ],
   });
 
@@ -182,7 +168,36 @@ export const getConversations = async (userId: string) => {
   }
 
   // @ts-ignore
-  return user.conversations;
+  const conversations = user.conversations;
+
+  // Fetch the latest message for each conversation manually to avoid Sequelize limit/order issues in nested includes
+  const conversationsWithMessages = await Promise.all(
+    conversations.map(async (conversation: any) => {
+      const lastMessage = await Message.findOne({
+        where: { conversationId: conversation.id },
+        order: [["createdAt", "DESC"]],
+      });
+
+      const convJson = conversation.toJSON();
+      convJson.messages = lastMessage ? [lastMessage] : [];
+      return convJson;
+    })
+  );
+
+  // Sort by latest message date
+  conversationsWithMessages.sort((a: any, b: any) => {
+    const dateA =
+      a.messages.length > 0
+        ? new Date(a.messages[0].createdAt).getTime()
+        : new Date(a.createdAt).getTime();
+    const dateB =
+      b.messages.length > 0
+        ? new Date(b.messages[0].createdAt).getTime()
+        : new Date(b.createdAt).getTime();
+    return dateB - dateA;
+  });
+
+  return conversationsWithMessages;
 };
 
 export const getMessages = async (conversationId: string, userId: string) => {
