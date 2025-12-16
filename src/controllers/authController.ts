@@ -29,9 +29,10 @@ export const register = async (req: Request, res: Response) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", //secure cookies in production
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // 'none' for cross-site in production
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: "/",
     });
 
     res.status(201).json({
@@ -66,6 +67,7 @@ export const login = async (req: Request, res: Response) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: "/",
     });
 
     res.status(200).json({
@@ -89,6 +91,7 @@ export const googleAuthCallback = (req: Request, res: Response) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: "/",
     });
 
     const frontendUrls = process.env.FRONTEND_URLS

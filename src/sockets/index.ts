@@ -12,11 +12,25 @@ import {
 let io: Server;
 
 export const initSocket = (httpServer: HttpServer) => {
+  const allowedOrigins = process.env.FRONTEND_URLS
+    ? process.env.FRONTEND_URLS.split(",")
+    : ["http://localhost:9002"];
+
   io = new Server(httpServer, {
     cors: {
-      origin: process.env.FRONTEND_URLS
-        ? process.env.FRONTEND_URLS.split(",")
-        : ["http://localhost:9002"],
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (
+          allowedOrigins.includes(origin) ||
+          origin.startsWith("capacitor://") ||
+          origin.startsWith("ionic://") ||
+          origin === "file://"
+        ) {
+          callback(null, true);
+        } else {
+          callback(new Error("Not allowed by CORS"));
+        }
+      },
       methods: ["GET", "POST"],
       credentials: true,
     },

@@ -30,6 +30,9 @@ const app: Express = express();
 const httpServer = createServer(app);
 initSocket(httpServer);
 
+// Trust proxy is required for secure cookies behind a proxy (e.g. Heroku, Render, Nginx)
+app.set("trust proxy", 1);
+
 const allowedOrigins = process.env.FRONTEND_URLS
   ? process.env.FRONTEND_URLS.split(",")
   : ["http://localhost:9002"];
@@ -40,7 +43,13 @@ app.use(
       // Allow requests with no origin (like mobile apps or Postman)
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
+      // Check if origin is in allowedOrigins or is a mobile app origin
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.startsWith("capacitor://") ||
+        origin.startsWith("ionic://") ||
+        origin === "file://"
+      ) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
@@ -48,7 +57,13 @@ app.use(
     },
     credentials: true, // Allow cookies/auth headers
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+      "Origin",
+    ],
   })
 );
 
